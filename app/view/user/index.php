@@ -1,15 +1,3 @@
-<?php
-session_start();
-if (isset($_SESSION['admin'])) {
-
-    header('location: app/view/admin/kuis.php');
-  
-    return;
-}
-if (!isset($_SESSION['user'])) {
-    header('location: app/view/landingpage/index.php');
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -306,16 +294,16 @@ if (!isset($_SESSION['user'])) {
 
                 </ul>
             </nav>
-            <!-- <a href="#" class="contact-btn">Masuk</a> -->
+            <a href="#" class="contact-btn">Masuk</a>
         </div>
     </header>
 
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-                <h2>Selamat datang <?php echo $_SESSION['user'] ?></h2>
+                <h2>Lorem ipsum dolor sit amet consectetur adipisicing elit.</h2>
                 <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsa alias quam, eius error na</p>
-                <a href="app/view/user/materi/index.php" class="btn">Mulai Belajar</a>
+                <a href="materi/index.php" class="btn">Mulai Belajar</a>
             </div>
 
         </div>

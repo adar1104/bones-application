@@ -4,10 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tulang</title>
-
+    <title>Kuis</title>
     <link rel="stylesheet" href="../../../assets/css/styles.css">
-  
     <style>
         .notification {
             display: none;
@@ -27,41 +25,39 @@
 
         .header-image {
             width: 30px;
-            /* Sesuaikan ukuran gambar header */
             height: auto;
             margin-right: 20px;
         }
 
         .button img {
             width: 30px;
-            /* Sesuaikan ukuran gambar header */
             height: auto;
             margin-right: 20px;
             margin-top: 9px;
         }
 
-        .notification {
-            display: none;
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            border-radius: 5px;
+        .description {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .notification.show {
-            display: block;
+        .more-link {
+            color: blue;
+            cursor: pointer;
         }
 
-        .button img {
-            width: 30px;
-            /* Sesuaikan ukuran gambar header */
-            height: auto;
-            margin-right: 20px;
-            margin-top: 9px;
+        .action-buttons img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+
+        .quiz-image {
+            max-width: 100px;
+            max-height: 100px;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -72,22 +68,20 @@
             <h1>eProduct</h1>
             <ul>
                 <li><a href="index-admin.php">Dashboard</a></li>
-                <li class="active"><a href="tulang.php">Tulang</a></li>
+                <li><a href="tulang.php">Tulang</a></li>
                 <li><a href="sendi.php">Sendi</a></li>
                 <li><a href="otot.php">Otot</a></li>
                 <li><a href="penyakit.php">Penyakit</a></li>
-                <li><a href="kuis.php">Kuis</a></li>
+                <li class="active"><a href="kuis.php">Kuis</a></li>
             </ul>
         </div>
         <div class="main-content">
             <header>
-                <h2>Tulang</h2>
+                <h2>Kuis</h2>
                 <div class="header-actions">
                     <img src="../../../assets/img/icon/home.png" alt="Header Image" class="header-image">
-                  
-                    <a href="form/tulang.php" class="button">
-                  
-                        <img src="../../../assets/img/icon/add.png" alt="Tambah Tulang">
+                    <a href="form/kuis.php" class="button">
+                        <img src="../../../assets/img/icon/add.png" alt="Tambah Kuis">
                     </a>
                 </div>
             </header>
@@ -96,42 +90,62 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Tulang</th>
+                            <th>Soal</th>
+                            <th>Jawaban</th>
+                            <th>Explanation</th>
                             <th>Gambar</th>
-                            <th>Deskripsi</th>
-                            <th>Tanggal</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="tulangTableBody">
-                        <!-- Data Tulang dari Database -->
+                    <tbody id="kuisTableBody">
+                        <!-- Data Kuis dari Database -->
                         <?php
                         require_once '../../config/index.php';
 
-                        $sql = "SELECT * FROM tulang";
+                        $sql = "SELECT * FROM kuis";
                         $result = $conn->query($sql);
 
                         if ($result->num_rows > 0) {
                             $no = 1;
                             while ($row = $result->fetch_assoc()) {
-                                $tanggal = !empty($row['tanggal']) ? date('d-m-Y', strtotime($row['tanggal'])) : 'N/A';
+                                $question = isset($row['question']) ? $row['question'] : 'N/A';
+                                // $option1 = isset($row['option1']) ? $row['option1'] : '';
+                                // $option2 = isset($row['option2']) ? $row['option2'] : '';
+                                // $option3 = isset($row['option3']) ? $row['option3'] : '';
+                                // $option4 = isset($row['option4']) ? $row['option4'] : '';
+                                $correct = isset($row['correct']) ? $row['correct'] : '';
+                                $explanation = isset($row['explanation']) ? $row['explanation'] : '';
+                                $image = isset($row['image']) ? $row['image'] : '';
+
                                 echo "<tr id='row_" . $row['id'] . "'>";
                                 echo "<td class='number'>" . $no++ . "</td>";
-                                echo "<td>" . $row['name'] . "</td>";
-                                echo "<td><img src='../../../assets/img/uploads/" . $row['image'] . "' width='100'></td>";
-                                echo "<td data-full-description='" . htmlspecialchars($row['description']) . "'>" . substr($row['description'], 0, 100) . "...</td>";
-                                echo "<td>" . $tanggal . "</td>";
+                                echo "<td>" . htmlspecialchars($question, ENT_QUOTES) . "</td>";
+                                echo "<td>";
+                                // echo "Option 1: " . htmlspecialchars($option1, ENT_QUOTES) . "<br>";
+                                // echo "Option 2: " . htmlspecialchars($option2, ENT_QUOTES) . "<br>";
+                                // echo "Option 3: " . htmlspecialchars($option3, ENT_QUOTES) . "<br>";
+                                // echo "Option 4: " . htmlspecialchars($option4, ENT_QUOTES) . "<br>";
+                                echo htmlspecialchars($correct, ENT_QUOTES) . "<br>";
+                                // echo "Explanation: " . htmlspecialchars($explanation, ENT_QUOTES);
+                                // echo "</td>";
+                                echo "<td>";
+                                echo htmlspecialchars($explanation, ENT_QUOTES) . "<br>";
+                                echo "</td>";
+                                echo "<td>";
+                                if ($image) {
+                                    echo "<img src='../../../assets/img/uploads/" . htmlspecialchars($image, ENT_QUOTES) . "' alt='Gambar Kuis' class='quiz-image'>";
+                                }
+                                echo "</td>";
                                 echo "<td>
                                         <div class='action-buttons'>
-                                            <a href='update/tulang.php?id=" . $row['id'] . "'><img src='../../../assets/img/icon/edit.png' alt='Edit' style='width: 30px; height: 30px;'></a>
-                                            <a href='../../controller/admin/tulang/delete.php?id=" . $row['id'] . "' onclick='return confirm(\"Are you sure you want to delete this item?\");'><img src='../../../assets/img/icon/remove.png' alt='Hapus' style='width: 30px; height: 30px;'></a>
-                            
+                                            <a href='update/kuis.php?id=" . $row['id'] . "'><img src='../../../assets/img/icon/edit.png' alt='Edit' style='width: 30px; height: 30px;'></a>
+                                            <a href='../../controller/admin/kuis/delete.php?id=" . $row['id'] . "' onclick='return confirm(\"Are you sure you want to delete this item?\");'><img src='../../../assets/img/icon/remove.png' alt='Hapus' style='width: 30px; height: 30px;'></a>
                                         </div>
                                       </td>";
                                 echo "</tr>";
                             }
                         } else {
-                            echo "<tr><td colspan='6'>Tidak ada data tulang</td></tr>";
+                            echo "<tr><td colspan='5'>Tidak ada data kuis</td></tr>";
                         }
                         $conn->close();
                         ?>
@@ -151,7 +165,7 @@
                     notification.classList.remove('show');
                 }, 3000);
 
-                // Remove the deleted row and redirect
+                // Remove the deleted row
                 const urlParams = new URLSearchParams(window.location.search);
                 const id = urlParams.get('id');
                 if (id) {
@@ -160,20 +174,12 @@
                         row.remove();
                     }
                     // Renumber rows
-                    const rows = document.querySelectorAll('#tulangTableBody tr');
+                    const rows = document.querySelectorAll('#kuisTableBody tr');
                     rows.forEach((row, index) => {
                         row.querySelector('.number').textContent = index + 1;
                     });
                 }
             }
-
-            document.querySelectorAll('.more-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    const descriptionCell = link.parentElement;
-                    const fullDescription = descriptionCell.getAttribute('data-full-description');
-                    descriptionCell.innerHTML = fullDescription;
-                });
-            });
         });
     </script>
 </body>
